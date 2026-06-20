@@ -1,0 +1,155 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f2f5;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr); /* 9 kolumn */
+    grid-template-rows: repeat(9, 1fr);    /* 9 wierszy */
+    width: 90vw;                          /* Szerokość: 90% szerokości ekranu */
+    max-width: 400px;                     /* Żeby na komputerze nie było gigantyczne */
+    height: 90vw;
+    max-height: 400px;
+    border: 3px solid #333;
+}
+
+.cell {
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: white;
+    box-sizing: border-box; /* Ważne: zapobiega "rozjeżdżaniu" się siatki przy grubych ramkach */
+}
+
+/* 1. Pogrubienie pionowych linii (po 3. i 6. kolumnie) */
+/* Wybiera komórki: 3, 12, 21... oraz 6, 15, 24... */
+.cell:nth-child(9n+3),
+.cell:nth-child(9n+6) {
+    border-right: 3px solid #333;
+}
+
+/* 2. Pogrubienie poziomych linii (po 3. i 6. rzędzie) */
+/* Wybiera komórki od 19 do 27 (koniec 3. rzędu) oraz od 46 do 54 (koniec 6. rzędu) */
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54) {
+    border-bottom: 3px solid #333;
+}
+
+/* Klasa dla komórek, które były podane na starcie (zablokowane) */
+.starting-cell {
+    background-color: #f0f0f0;
+    color: #555;
+    font-weight: bolder !important;
+}
+
+/* Klasa dla aktualnie klikniętej komórki */
+.cell.selected {
+    background-color: #b3d4fc !important; /* !important wymusi kolor nad standardowym białym */
+}
+
+.cell.error {
+    background-color: #f8d7da !important; /* Jasnoczerwone tło */
+    color: #721c24;                     /* Ciemnoczerwony tekst */
+}
+
+#keyboard {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    width: 90vw;
+    max-width: 400px;
+    justify-content: center;
+}
+
+.key-btn {
+    flex: 1;
+    padding: 12px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    /* Żeby na telefonie przyjemnie się klikało (brak domyślnego podświetlenia systemowego) */
+    -webkit-tap-highlight-color: transparent; 
+}
+
+.key-btn:active {
+    background-color: #ddd; /* Efekt naciśnięcia klawisza */
+}
+
+#clear-btn {
+    background-color: #ffebee;
+    color: #c62828;
+    border-color: #ffcdd2;
+}
+
+/* Ekran wygranej - tło pokrywające cały ekran */
+#win-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); /* Przyciemnienie tła gry */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Okienko z komunikatem */
+.win-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.win-content h2 {
+    color: #2e7d32;
+    margin-top: 0;
+}
+
+#restart-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+#restart-btn:hover {
+    background-color: #1b5e20;
+}
+
+/* Klasa pomocnicza do ukrywania elementów */
+.hidden {
+    display: none !important;
+}
+
+#difficulty-container {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+#difficulty-select {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: white;
+    font-weight: bold;
+    cursor: pointer;
+}

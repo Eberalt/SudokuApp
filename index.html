@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobilne Sudoku</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Sudoku</h1>
+
+    <div id="difficulty-container">
+        <label for="difficulty-select">Trudność: </label>
+        <select id="difficulty-select">
+            <option value="easy">Łatwy</option>
+            <option value="medium">Średni</option>
+            <option value="hard">Trudny</option>
+        </select>
+    </div>
+    
+    <div id="board"></div>
+
+    <div id="keyboard">
+        <button class="key-btn">1</button>
+        <button class="key-btn">2</button>
+        <button class="key-btn">3</button>
+        <button class="key-btn">4</button>
+        <button class="key-btn">5</button>
+        <button class="key-btn">6</button>
+        <button class="key-btn">7</button>
+        <button class="key-btn">8</button>
+        <button class="key-btn">9</button>
+        <button class="key-btn" id="clear-btn">X</button>
+    </div>
+    <div id="win-screen" class="hidden">
+        <div class="win-content">
+            <h2>🎉 Gratulacje! 🎉</h2>
+            <p>Rozwiązałeś to Sudoku!</p>
+            <button id="restart-btn">Zagraj ponownie</button>
+        </div>
+    </div>
+    <!-- <script src="puzzles.js"></script> -->
+    <script src="app.js"></script>
+</body>
+
+</html>
