@@ -1,16 +1,26 @@
 const boardElement = document.getElementById('board');
 const difficultySelect = document.getElementById('difficulty-select');
+const TOTAL_FILES_BY_DIFFICULTY = {
+    easy: 3100,       
+    medium: 3640,     
+    hard: 2057,       
+    very_hard: 205    
+};
 let selectedCell = null;
 
 async function fetchSudokuBoard(difficulty = 'easy') {
     try {
-        const response = await fetch(`https://sugoku.onrender.com/board?difficulty=${difficulty}`);
-        const data = await response.json();
+        const randomFileNumber = Math.floor(Math.random() * TOTAL_PUZZLE_FILES);
         
-        return data.board; 
+        const response = await fetch(`./puzzles/${difficulty}/${randomFileNumber}.json`);
+        const puzzlesPool = await response.json();
+        
+        const randomIndex = Math.floor(Math.random() * puzzlesPool.length);
+        const puzzleString = puzzlesPool[randomIndex];
+        
+        return puzzleString;
     } catch (error) {
-        console.error("Błąd podczas pobierania planszy:", error);
-        alert("Nie udało się pobrać planszy z API. Sprawdź połączenie z internetem.");
+        console.error("Błąd podczas dynamicznego pobierania partii plansz:", error);
         return null;
     }
 }
