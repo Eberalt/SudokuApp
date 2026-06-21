@@ -1,66 +1,69 @@
 const boardElement = document.getElementById('board');
 const difficultySelect = document.getElementById('difficulty-select');
 const TOTAL_FILES_BY_DIFFICULTY = {
-    easy: 3100,       
-    medium: 3640,     
-    hard: 2057,       
-    very_hard: 205    
+    easy: 3100,
+    medium: 3640,
+    hard: 2057,
+    very_hard: 205
 };
 let selectedCell = null;
 
 async function fetchSudokuBoard(difficulty = 'easy') {
     try {
-        const randomFileNumber = Math.floor(Math.random() * TOTAL_PUZZLE_FILES);
-        
+        const maxFiles = TOTAL_FILES_BY_DIFFICULTY[difficulty];
+
+        const randomFileNumber = Math.floor(Math.random() * maxFiles);
+
         const response = await fetch(`./puzzles/${difficulty}/${randomFileNumber}.json`);
         const puzzlesPool = await response.json();
-        
+
         const randomIndex = Math.floor(Math.random() * puzzlesPool.length);
         const puzzleString = puzzlesPool[randomIndex];
-        
+
         return puzzleString;
     } catch (error) {
-        console.error("Błąd podczas dynamicznego pobierania partii plansz:", error);
+        console.error(`Błąd podczas pobierania planszy (${difficulty}):`, error);
         return null;
     }
 }
 
 async function createBoard() {
     boardElement.innerHTML = '';
-    
+
     const selectedDifficulty = difficultySelect.value;
-    
-    const boardMatrix = await fetchSudokuBoard(selectedDifficulty);
-    if (!boardMatrix) return;
+
+    const puzzleString = await fetchSudokuBoard(selectedDifficulty);
+    if (!puzzleString) return;
 
     let index = 0;
-    for (let r = 0; r < 9; r++) {
-        for (let c = 0; c < 9; c++) {
-            const cell = document.createElement('div');
-            cell.classList.add('cell');
-            
-            cell.dataset.row = r;
-            cell.dataset.col = c;
-            cell.dataset.index = index;
+    for (let i = 0; i < 81; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
 
-            const value = boardMatrix[r][c];
-            cell.innerText = value === 0 ? '' : value;
-            
-            if (value !== 0) {
-                cell.classList.add('starting-cell');
-            } else {
-                cell.addEventListener('click', () => {
-                    if (selectedCell) {
-                        selectedCell.classList.remove('selected');
-                    }
-                    selectedCell = cell;
-                    cell.classList.add('selected');
-                });
-            }
+        // Poprawne wyliczenie wiersza i kolumny dla CSS / logiki sprawdzania
+        cell.dataset.row = Math.floor(i / 9);
+        cell.dataset.col = i % 9;
+        cell.dataset.index = i;
 
-            boardElement.appendChild(cell);
-            index++;
+        // Wyciągamy dokładnie JEDEN znak odpowiadający pozycji komórki
+        const char = puzzleString[i];
+
+        // Jeśli w bazie jest '0', pole zostaje puste, w przeciwnym razie wstawiamy cyfrę
+        cell.innerText = char === '0' ? '' : char;
+
+        if (char !== '0') {
+            cell.classList.add('starting-cell');
+        } else {
+            cell.addEventListener('click', () => {
+                if (selectedCell) {
+                    selectedCell.classList.remove('selected');
+                }
+                selectedCell = cell;
+                cell.classList.add('selected');
+            });
         }
+
+        boardElement.appendChild(cell);
     }
 }
 
@@ -68,7 +71,7 @@ addEventListener("DOMContentLoaded", (event) => { createBoard() });
 
 function checkErrors() {
     const allCells = document.querySelectorAll('.cell');
-    
+
     allCells.forEach(cell => cell.classList.remove('error'));
 
     allCells.forEach(currentCell => {
@@ -94,8 +97,8 @@ function checkErrors() {
                 // 2. Ta sama kolumna
                 const sameCol = (currentCol === otherCol);
                 // 3. Ten sam kwadrat 3x3
-                const sameBox = (Math.floor(currentRow / 3) === Math.floor(otherRow / 3) && 
-                                 Math.floor(currentCol / 3) === Math.floor(otherCol / 3));
+                const sameBox = (Math.floor(currentRow / 3) === Math.floor(otherRow / 3) &&
+                    Math.floor(currentCol / 3) === Math.floor(otherCol / 3));
 
                 if (sameRow || sameCol || sameBox) {
                     currentCell.classList.add('error');
@@ -137,7 +140,7 @@ const restartBtn = document.getElementById('restart-btn');
 
 function checkWin() {
     const allCells = document.querySelectorAll('.cell');
-    
+
     let isAllFilled = true;
     let hasAnyError = false;
 
@@ -162,7 +165,7 @@ async function resetGame() {
     }
 
     winScreen.classList.add('hidden');
-    
+
     await createBoard();
 }
 
